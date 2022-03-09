@@ -27,25 +27,9 @@ namespace KutseApp.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				if(guest.Attend == true)
-				{
-					SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
-					{
-						Port = 587,
-						Credentials = new NetworkCredential("programmeeriminetthk2@gmail.com", "2.kuursus tarpv20"),
-						EnableSsl = true,
-					};
-					MailMessage mailMessage = new MailMessage
-					{
-						From = new MailAddress("Cinema.Amogus@service.com"),
-						Subject = "Kutse peole",
-						Body = $"<h1>Ära unusta et sul on peole kutse!</h1>",
-						IsBodyHtml = true,
-					};
-
-					mailMessage.To.Add(new MailAddress(guest.Email));
-					smtpClient.Send(mailMessage);
-				}
+				db.Guests.Add(guest);
+				db.SaveChanges();
+				Thanks(guest.Email);
 				return View("Thanks", guest);
 			}
 			else
@@ -63,6 +47,68 @@ namespace KutseApp.Controllers
 			ViewBag.Message = "Hehe.";
 
 			return View();
+		}
+		[HttpPost]
+		public void Thanks(string email)
+		{
+			SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
+			{
+				Port = 587,
+				Credentials = new NetworkCredential("programmeeriminetthk3@gmail.com", "tarpv20 op 228 1337"),
+				EnableSsl = true,
+			};
+			MailMessage mailMessage = new MailMessage
+			{
+				From = new MailAddress("Cinema.Amogus@service.com"),
+				Subject = "Kutse peole",
+				Body = $"<h1>Ära unusta et sul on peole kutse!</h1>",
+				IsBodyHtml = true,
+			};
+
+			mailMessage.To.Add(new MailAddress(email));
+			smtpClient.Send(mailMessage);
+		}
+		
+		GuestContext db = new GuestContext();
+		[Authorize] //-только увидит залогиненный чел
+		public ActionResult Guests()
+		{
+			IEnumerable<Guest> guests = db.Guests;
+			return View(guests);
+		}
+		[HttpGet]
+		public ActionResult Create()
+		{
+			return View();
+		}
+		[HttpPost]
+		public ActionResult Create(Guest guest)
+		{
+			db.Guests.Add(guest);
+			db.SaveChanges();
+			return RedirectToAction("Guests");
+		}
+		[HttpGet]
+		public ActionResult Delete(int id)
+		{
+			Guest g = db.Guests.Find(id);
+			if (g == null)
+			{
+				return HttpNotFound();
+			}
+			return View(g);
+		}
+		[HttpPost, ActionName("Delete")]
+		public ActionResult DeleteConfirmed(int id)
+		{
+			Guest g = db.Guests.Find(id);
+			if(g == null)
+			{
+				return HttpNotFound();
+			}
+			db.Guests.Remove(g);
+			db.SaveChanges();
+			return RedirectToAction("Guests");
 		}
 	}
 }
