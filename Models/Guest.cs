@@ -15,7 +15,7 @@ namespace KutseApp.Models
 		[RegularExpression(@".+\@.+\..+", ErrorMessage = "See on vale email!")]
 		public string Email { get; set; }
 		[Required(ErrorMessage = "On vaja sisesta oma telefoninumber!")]
-		[RegularExpression(@"\+372.+", ErrorMessage = "See on vale telefon!")]
+		//[RegularExpression(@"\+372.+", ErrorMessage = "See on vale telefon!")]
 		public string Phone { get; set; }
 		[Required(ErrorMessage = "Tee oma valik!")]
 		public bool? Attend { get; set; }
