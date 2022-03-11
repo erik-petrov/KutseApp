@@ -15,8 +15,8 @@ namespace KutseApp.Controllers
 		public static string email;
 		public ActionResult Index()
 		{
-			ViewBag.Greeting = DateTime.Now.Hour < 12 ? "Tere hommikust" : $"Tere päevast";
-			ViewBag.Message = "Ootan sind oma peole! Palun tule kindlasti";
+			ViewBag.Greeting = CurrentHour();
+			ViewBag.Message = "Head " + Month() + "i pidu!";
 			return View();
 		}
 		[HttpGet]
@@ -210,6 +210,31 @@ namespace KutseApp.Controllers
 			pd.Entry(p).State = System.Data.Entity.EntityState.Modified;
 			pd.SaveChanges();
 			return RedirectToAction("Pidus");
+		}
+		public string CurrentHour()
+		{
+			int h = DateTime.Now.Hour;
+			if (h < 12 && h > 8)
+			{
+				return "Tere Hommikust";
+			}
+			else if (h < 18)
+			{
+				return "Tere päevast";
+			}
+			else if (h < 22)
+			{
+				return "Tere õhtu";
+			}
+			else if (h > 22 || h < 8)
+			{
+				return "Tere ööd";
+			}
+			return "";
+		}
+		public string Month()
+		{
+			return (new string[12] { "Jaanuari", "Veebruari", "Märtsi", "Aprilli", "Mai", "Juuni", "Juuli", "Augusti", "Septembri", "Oktoobri", "Novembri", "Detsemberi" })[DateTime.Now.Month - 1];
 		}
 	}
 }
